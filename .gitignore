@@ -1,0 +1,117 @@
+# ====================
+# 操作系统生成的文件
+# ====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ====================
+# IDE 相关（前后端通用）
+# ====================
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.springBeans
+
+# ====================
+# 前端 - Ant Design Pro 相关
+# ====================
+ucfrontend/node_modules/
+ucfrontend/dist/
+ucfrontend/build/
+ucfrontend/.umi
+ucfrontend/.umi-production
+ucfrontend/.env.local
+ucfrontend/.env.*.local
+ucfrontend/package-lock.json
+ucfrontend/yarn.lock
+ucfrontend/pnpm-lock.yaml
+
+# 前端测试覆盖率
+ucfrontend/coverage/
+ucfrontend/.jest/
+
+# 前端编辑器相关
+ucfrontend/.vscode/
+ucfrontend/.idea/workspace.xml
+
+# ====================
+# 后端 - Spring Boot 相关
+# ====================
+ucbackend/target/
+ucbackend/.mvn/
+ucbackend/build/
+ucbackend/!**/src/main/**/target/
+ucbackend/!**/src/test/**/target/
+
+# Maven 相关
+ucbackend/pom.xml.tag
+ucbackend/pom.xml.releaseBackup
+ucbackend/pom.xml.versionsBackup
+ucbackend/pom.xml.next
+ucbackend/release.properties
+ucbackend/dependency-reduced-pom.xml
+ucbackend/.flattened-pom.xml
+
+# Maven wrapper（保留 jar，忽略临时文件）
+# ucbackend/.mvn/wrapper/maven-wrapper.jar
+# ucbackend/.mvn/timing.properties
+# ucbackend/.mvn/wrapper/maven-wrapper.properties.original
+ucbackend/mvnw
+ucbackend/mvnw.cmd
+
+# 日志文件
+ucbackend/logs/
+ucbackend/*.log
+ucbackend/**/logs/
+ucbackend/**/*.log
+
+# 临时数据库文件
+ucbackend/*.db
+ucbackend/*.mdb
+ucbackend/*.h2.db
+
+# 上传目录
+ucbackend/uploads/
+ucbackend/upload/
+ucbackend/temp/
+
+# .gitignore相关
+ucbackend/.gitattributes
+ucbackend/.gitignore
+
+# ====================
+# 敏感信息（永远不要提交）
+# ====================
+*.pem
+*.key
+*.crt
+*.keystore
+*.jks
+application-local.yml
+application-local.properties
+application-dev.yml
+application-dev.properties
+application-secret.yml
+application-secret.properties
+
+# ====================
+# 其他临时文件
+# ====================
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store

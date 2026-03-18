@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: ucbackend
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123
+    url: jdbc:mysql://localhost:3306/uccenter
+server:
+  servlet:
+    context-path: /
