@@ -1,11 +1,14 @@
 package com.yeahicode.ucbackend.service.impl;
 
+import com.yeahicode.ucbackend.model.response.LoginedUser;
 import com.yeahicode.ucbackend.service.UserService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @SpringBootTest
@@ -13,6 +16,43 @@ class UserServiceImplTest {
 
     @Resource
     private UserService userService;
+
+    @Test
+    void userLoginTestUserStatusError() {
+        LoginedUser loginedUser = userService.userLogin("Test002", "12345678", null);
+        Assertions.assertNull(loginedUser);
+    }
+
+    @Test
+    void userLoginTestPasswordError() {
+        LoginedUser loginedUser = userService.userLogin("Test001", "12345679", null);
+        Assertions.assertNull(loginedUser);
+    }
+
+    @Test
+    void userLoginTestUserExist() {
+        LoginedUser loginedUser = userService.userLogin("test000", "abc", null);
+        Assertions.assertNull(loginedUser);
+    }
+
+    @Test
+    void userLoginTestParamsNotBlank() {
+        // 创建测试数据流
+        Stream<Object[]> stream = Stream.of(
+                new Object[]{null, "abc", null},
+                new Object[]{"", "abc", null},
+                new Object[]{"abc", null, null},
+                new Object[]{"abc", "", null}
+        );
+
+        // 执行测试
+        boolean allMatch = stream.map(params -> {
+            return userService.userLogin((String) params[0], (String) params[1], (HttpServletRequest) params[2]);
+        }).allMatch(Objects::isNull);
+
+        // 断言
+        Assertions.assertTrue(allMatch);
+    }
 
     @Test
     void userRegisterTestRegisterSuccess() {

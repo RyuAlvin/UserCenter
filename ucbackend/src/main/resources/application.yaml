@@ -17,3 +17,7 @@ mybatis-plus:
     #mp会自动默认列明为user_account。
     #所以需要关闭驼峰转下划线
     map-underscore-to-camel-case: false
+  global-config:
+    db-config:
+      #指定全局逻辑删除字段名
+      logic-delete-field: isDelete

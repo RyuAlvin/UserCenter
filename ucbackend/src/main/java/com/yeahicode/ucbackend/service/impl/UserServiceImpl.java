@@ -2,12 +2,16 @@ package com.yeahicode.ucbackend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yeahicode.ucbackend.model.User;
-import com.yeahicode.ucbackend.service.UserService;
 import com.yeahicode.ucbackend.mapper.UserMapper;
+import com.yeahicode.ucbackend.model.User;
+import com.yeahicode.ucbackend.model.response.LoginedUser;
+import com.yeahicode.ucbackend.service.UserService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -69,13 +73,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         newUser.setUserAccount(userAccount);
         newUser.setUserPassword(encryptPassword);
         boolean saved = this.save(newUser);
-        if(!saved) {
+        if (!saved) {
             log.error("该注册信息保存至数据库时发生错误");
             return -1L;
         }
         // 9、返回id
         log.info("注册成功，id={}", newUser.getId());
         return newUser.getId();
+    }
+
+    @Override
+    public LoginedUser userLogin(String userAccount, String userPassword, HttpServletRequest request) {
+        // 1、参数非空校验
+        if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+            log.error("存在空参数");
+            return null;
+        }
+        // 2、查询用户
+        User user = userMapper.selectOne(
+                new QueryWrapper<User>().lambda()
+                        .eq(User::getUserAccount, userAccount));
+        // 3、查询结果非空校验
+        if (user == null) {
+            log.error("用户登录查询结果为空");
+            return null;
+        }
+        // 4、密码加盐加密
+        String encryptPassword = DigestUtils.md5DigestAsHex((userPassword + "UserCenter").getBytes());
+        // 5、密码验证
+        if (!encryptPassword.equals(user.getUserPassword())) {
+            log.error("密码不正确");
+            return null;
+        }
+        // 6、用户状态确认
+        if (user.getUserStatus() == 0) {
+            log.error("当前用户状态不可用");
+            return null;
+        }
+        // 7、用户信息脱敏
+        LoginedUser loginedUser = new LoginedUser();
+        BeanUtils.copyProperties(user, loginedUser);
+        // 若存在session则返回现有session，若没有则创建新session
+        HttpSession session = request.getSession(true);
+        // 默认时间30分钟，由tomcat的配置文件（conf/web.xml）决定
+        // 也可自己设定，以秒为单位
+        session.setAttribute("LOGINED_USER", loginedUser);
+        // 8、返回脱敏后的用户信息
+        return loginedUser;
     }
 }
 

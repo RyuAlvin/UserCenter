@@ -2,13 +2,17 @@ package com.yeahicode.ucbackend.service;
 
 import com.yeahicode.ucbackend.model.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yeahicode.ucbackend.model.response.LoginedUser;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
-* @author ryualvin
-* @description 针对表【user】的数据库操作Service
-* @createDate 2026-03-18 20:12:58
-*/
+ * @author ryualvin
+ * @description 针对表【user】的数据库操作Service
+ * @createDate 2026-03-18 20:12:58
+ */
 public interface UserService extends IService<User> {
 
     Long userRegister(String userAccount, String userPassword, String checkPassword);
+
+    LoginedUser userLogin(String userAccount, String userPassword, HttpServletRequest request);
 }

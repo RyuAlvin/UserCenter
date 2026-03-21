@@ -4,17 +4,23 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * 
+ * 注意：因为在成功登录后需要将查询到的用户信息存入session中，涉及持久化操作，所以该类需要序列化
+ *
  * @TableName user
  */
-@TableName(value ="user")
+@TableName(value = "user")
 @Data
 public class User implements Serializable {
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+
     /**
      * 主键ID
      */
@@ -57,7 +63,7 @@ public class User implements Serializable {
     private String email;
 
     /**
-     * 用户状态
+     * 用户状态（0：禁用、1：普通用户、2：管理员）
      */
     private Integer userStatus;
 
@@ -75,7 +81,4 @@ public class User implements Serializable {
      * 更新时间
      */
     private Date updateTime;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }
