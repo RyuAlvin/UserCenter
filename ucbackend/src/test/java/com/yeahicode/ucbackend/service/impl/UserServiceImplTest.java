@@ -1,6 +1,7 @@
 package com.yeahicode.ucbackend.service.impl;
 
 import com.yeahicode.ucbackend.model.response.LoginedUser;
+import com.yeahicode.ucbackend.model.response.SearchUser;
 import com.yeahicode.ucbackend.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -16,6 +18,12 @@ class UserServiceImplTest {
 
     @Resource
     private UserService userService;
+
+    @Test
+    void userListTest() {
+        List<SearchUser> searchUsers = userService.userList(null);
+        searchUsers.forEach(System.out::println);
+    }
 
     @Test
     void userLoginTestUserStatusError() {

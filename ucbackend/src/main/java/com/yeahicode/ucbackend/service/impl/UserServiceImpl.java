@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yeahicode.ucbackend.mapper.UserMapper;
 import com.yeahicode.ucbackend.model.User;
 import com.yeahicode.ucbackend.model.response.LoginedUser;
+import com.yeahicode.ucbackend.model.response.SearchUser;
 import com.yeahicode.ucbackend.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -120,6 +123,42 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         session.setAttribute("LOGINED_USER", loginedUser);
         // 8、返回脱敏后的用户信息
         return loginedUser;
+    }
+
+    @Override
+    public List<SearchUser> userList(HttpServletRequest request) {
+        // 1、获取当前session
+        // 如果当前没有关联的session则返回null
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            log.error("session不存在，用户未登录");
+            return Collections.emptyList();
+        }
+        // 2、获取当前用户
+        LoginedUser loginedUser = (LoginedUser) session.getAttribute("LOGINED_USER");
+        if (loginedUser == null) {
+            log.error("session中无用户信息");
+            return Collections.emptyList();
+        }
+        // 3、通过用户账户查询数据库中的实时用户信息
+        User latestUserInfo = userMapper.selectOne(new QueryWrapper<User>().lambda().eq(User::getUserAccount, loginedUser.getUserAccount()));
+        if (latestUserInfo == null) {
+            log.error("该用户不存在");
+            return Collections.emptyList();
+        }
+        // 4、判断用户状态
+        if (latestUserInfo.getUserStatus() != 2) {
+            log.error("该用户非管理员");
+            return Collections.emptyList();
+        }
+        // 5、查询所有用户
+        List<User> userList = userMapper.selectAllIncludingDeleted();
+        // 6、循环数据脱敏
+        return userList.stream().map(user -> {
+            SearchUser searchUser = new SearchUser();
+            BeanUtils.copyProperties(user, searchUser);
+            return searchUser;
+        }).toList();
     }
 }
 
