@@ -9,3 +9,11 @@ spring:
 server:
   servlet:
     context-path: /
+  port: 8080
+mybatis-plus:
+  configuration:
+    #表中的字段用的是驼峰命名。
+    #Java中通过new QueryWrapper<User>().lambda().eq(User::getUserAccount, "XXX")查询DB的时候，
+    #mp会自动默认列明为user_account。
+    #所以需要关闭驼峰转下划线
+    map-underscore-to-camel-case: false

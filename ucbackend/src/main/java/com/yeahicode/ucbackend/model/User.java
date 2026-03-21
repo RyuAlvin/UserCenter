@@ -29,12 +29,12 @@ public class User implements Serializable {
     /**
      * 用户的登录账号（用来登录系统的唯一标识，一旦注册，通常不可修改或修改流程非常严格）
      */
-    private String useraccount;
+    private String userAccount;
 
     /**
      * 头像
      */
-    private String avatarurl;
+    private String avatarUrl;
 
     /**
      * 性别
@@ -44,7 +44,7 @@ public class User implements Serializable {
     /**
      * 登录密码
      */
-    private String userpassword;
+    private String userPassword;
 
     /**
      * 电话
@@ -59,22 +59,22 @@ public class User implements Serializable {
     /**
      * 用户状态
      */
-    private Integer userstatus;
+    private Integer userStatus;
 
     /**
      * 逻辑删除
      */
-    private Integer isdelete;
+    private Integer isDelete;
 
     /**
      * 创建时间
      */
-    private Date createtime;
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private Date updatetime;
+    private Date updateTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
