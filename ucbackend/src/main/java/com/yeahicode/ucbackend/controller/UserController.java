@@ -1,17 +1,17 @@
 package com.yeahicode.ucbackend.controller;
 
+import com.yeahicode.ucbackend.model.User;
 import com.yeahicode.ucbackend.model.request.LoginUser;
 import com.yeahicode.ucbackend.model.request.RegisterUser;
 import com.yeahicode.ucbackend.model.response.LoginedUser;
 import com.yeahicode.ucbackend.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/user")
 @RestController
@@ -56,5 +56,35 @@ public class UserController {
         }
         // 3、登录
         return userService.userLogin(userAccount, userPassword, request);
+    }
+
+    @GetMapping("/current")
+    public LoginedUser getCurrentUser(HttpServletRequest request) {
+        // 1、session非空校验
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            log.error("session为空");
+            return null;
+        }
+        // 2、登录态非空校验
+        LoginedUser loginedUser = (LoginedUser) session.getAttribute("LOGINED_USER");
+        if(loginedUser == null) {
+            log.error("session中无登录态");
+            return null;
+        }
+        // 3、从DB中获取实时用户信息
+        User rtUser = userService.getById(loginedUser.getId());
+        if(rtUser == null) {
+            log.error("DB中不存在改用户");
+            return null;
+        }
+        // 4、最新用户状态校验
+        if (rtUser.getUserStatus() == 0) {
+            log.error("该用户目前为禁用状态");
+            return null;
+        }
+        // 5、脱敏
+        BeanUtils.copyProperties(rtUser, loginedUser);
+        return loginedUser;
     }
 }

@@ -1,30 +1,13 @@
 import { login } from '@/services/ant-design-pro/api';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
-import { Alert, message } from 'antd';
-import React, { useState } from 'react';
-import { FormattedMessage, history, useIntl, useModel } from 'umi';
+import { message } from 'antd';
+import React from 'react';
+import { history, useModel } from 'umi';
 import styles from './index.less';
 
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => (
-  <Alert
-    style={{
-      marginBottom: 24,
-    }}
-    message={content}
-    type="error"
-    showIcon
-  />
-);
-
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const [type] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
-
-  const intl = useIntl();
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -37,15 +20,12 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async (values: API.LoginParams) => {
+    const loginErrMsg = '登录失败，请重试！';
     try {
       // 登录
-      const msg = await login({ ...values, type });
-      if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
-        });
-        message.success(defaultLoginSuccessMessage);
+      const user = await login({ ...values });
+      if (user) {
+        message.success('登录成功！');
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
         if (!history) return;
@@ -54,22 +34,15 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       }
-      console.log(msg);
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
+      message.error(loginErrMsg);
     } catch (error) {
-      const defaultLoginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
-      });
-      message.error(defaultLoginFailureMessage);
+      message.error(loginErrMsg);
     }
   };
-  const { status } = userLoginState;
 
   const toRegister = () => {
     history.replace('/user/register');
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -86,15 +59,6 @@ const Login: React.FC = () => {
           <br />
           <br />
 
-          {status === 'error' && (
-            <LoginMessage
-              content={intl.formatMessage({
-                id: 'pages.login.accountLogin.errorMessage',
-                defaultMessage: '账户或密码错误',
-              })}
-            />
-          )}
-
           <>
             <ProFormText
               name="userAccount"
@@ -102,19 +66,11 @@ const Login: React.FC = () => {
                 size: 'large',
                 prefix: <UserOutlined className={styles.prefixIcon} />,
               }}
-              placeholder={intl.formatMessage({
-                id: 'pages.login.username.placeholder',
-                defaultMessage: '请输入账户',
-              })}
+              placeholder="请输入账户"
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id="pages.login.username.required"
-                      defaultMessage="账户是必填项！"
-                    />
-                  ),
+                  message: '账户是必填项！',
                 },
               ]}
             />
@@ -124,19 +80,11 @@ const Login: React.FC = () => {
                 size: 'large',
                 prefix: <LockOutlined className={styles.prefixIcon} />,
               }}
-              placeholder={intl.formatMessage({
-                id: 'pages.login.password.placeholder',
-                defaultMessage: '请输入密码',
-              })}
+              placeholder="请输入密码"
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id="pages.login.password.required"
-                      defaultMessage="密码是必填项！"
-                    />
-                  ),
+                  message: '密码是必填项！',
                 },
               ]}
             />
@@ -148,7 +96,7 @@ const Login: React.FC = () => {
             }}
           >
             <ProFormCheckbox noStyle name="autoLogin">
-              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
+              自动登录
             </ProFormCheckbox>
             <a
               style={{
@@ -156,7 +104,7 @@ const Login: React.FC = () => {
               }}
               onClick={() => toRegister()}
             >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="注册用户 >>" />
+              注册用户 &gt;&gt;
             </a>
           </div>
         </LoginForm>
