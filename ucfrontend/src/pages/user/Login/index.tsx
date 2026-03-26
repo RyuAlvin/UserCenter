@@ -67,6 +67,10 @@ const Login: React.FC = () => {
   };
   const { status } = userLoginState;
 
+  const toRegister = () => {
+    history.replace('/user/register');
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -150,6 +154,7 @@ const Login: React.FC = () => {
               style={{
                 float: 'right',
               }}
+              onClick={() => toRegister()}
             >
               <FormattedMessage id="pages.login.forgotPassword" defaultMessage="注册用户 >>" />
             </a>

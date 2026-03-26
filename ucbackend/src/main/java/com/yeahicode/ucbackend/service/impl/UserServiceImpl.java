@@ -40,23 +40,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             log.error("存在空参数");
             return -1L;
         }
-        // 2、用户名长度校验（避免正则表达式过度匹配）
+        // 2、账户长度校验（避免正则表达式过度匹配）
         if (userAccount.length() < 5 || userAccount.length() > 20) {
-            log.error("用户名长度不符合5-20位");
+            log.error("账户长度不符合5-20位");
             return -1L;
         }
-        // 3、用户名常用规则校验（长度限制，特殊字符限制等）
+        // 3、账户常用规则校验（长度限制，特殊字符限制等）
         // 必须以字母开头，只允许字母、数字、下划线、点，长度5-20位
         // 使用预编译的Pattern
         Pattern pattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_.]{4,19}$");
         if (!pattern.matcher(userAccount).matches()) {
-            log.error("用户名长度不符合命名规范：必须以字母开头，只允许字母、数字、下划线、点，长度5-20位");
+            log.error("账户长度不符合命名规范：必须以字母开头，只允许字母、数字、下划线、点，长度5-20位");
             return -1L;
         }
-        // 4、用户名是否存在校验
+        // 4、账户是否存在校验
         // 使用lambda简化
         if (userMapper.exists(new QueryWrapper<User>().lambda().eq(User::getUserAccount, userAccount))) {
-            log.error("用户名\"{}\"已存在", userAccount);
+            log.error("账户\"{}\"已存在", userAccount);
             return -1L;
         }
         // 5、密码长度校验（不小于8位）
