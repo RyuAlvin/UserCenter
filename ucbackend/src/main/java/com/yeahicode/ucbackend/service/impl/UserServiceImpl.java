@@ -73,6 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String encryptPassword = DigestUtils.md5DigestAsHex((userPassword + "UserCenter").getBytes());
         // 8、存入DB
         User newUser = new User();
+        newUser.setUsername(userAccount);
         newUser.setUserAccount(userAccount);
         newUser.setUserPassword(encryptPassword);
         boolean saved = this.save(newUser);
