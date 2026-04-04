@@ -35,7 +35,7 @@
         path: '/admin/userManage',
         name: 'user-manage',
         icon: 'smile',
-        component: './Admin/UserManage',
+        component: './Admin/UserManage/UserManage',
       },
       {
         component: './404',
