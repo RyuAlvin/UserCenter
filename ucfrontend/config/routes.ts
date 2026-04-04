@@ -29,23 +29,18 @@
     name: 'admin',
     icon: 'crown',
     access: 'canAdmin',
+    component: './Admin',
     routes: [
       {
-        path: '/admin/sub-page',
-        name: 'sub-page',
+        path: '/admin/userManage',
+        name: 'user-manage',
         icon: 'smile',
-        component: './Welcome',
+        component: './Admin/UserManage',
       },
       {
         component: './404',
       },
     ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
   },
   {
     path: '/',

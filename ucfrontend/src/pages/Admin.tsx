@@ -4,7 +4,7 @@ import { Alert, Card, Typography } from 'antd';
 import React from 'react';
 import { useIntl } from 'umi';
 
-const Admin: React.FC = () => {
+const Admin: React.FC = ({children}) => {
   const intl = useIntl();
   return (
     <PageHeaderWrapper
@@ -12,7 +12,7 @@ const Admin: React.FC = () => {
         id: 'pages.admin.subPage.title',
         defaultMessage: 'This page can only be viewed by admin',
       })}
-    >
+    >{children}
       <Card>
         <Alert
           message={intl.formatMessage({
