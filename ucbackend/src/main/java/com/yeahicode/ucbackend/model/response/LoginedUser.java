@@ -35,4 +35,9 @@ public class LoginedUser implements Serializable {
      * 用户状态
      */
     private Integer userStatus;
+
+    /**
+     * 用户角色
+     */
+    private Integer userRole;
 }

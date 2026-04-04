@@ -148,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return Collections.emptyList();
         }
         // 4、判断用户状态
-        if (latestUserInfo.getUserStatus() != 2) {
+        if (latestUserInfo.getUserRole() != 0) {
             log.error("该用户非管理员");
             return Collections.emptyList();
         }

@@ -38,9 +38,14 @@ public class SearchUser {
     private String email;
 
     /**
-     * 用户状态（0：禁用、1：普通用户、2：管理员）
+     * 用户状态（0：禁用、1：可用）
      */
     private Integer userStatus;
+
+    /**
+     * 用户角色（1：管理者、2：普通用户）
+     */
+    private Integer userRole;
 
     /**
      * 逻辑删除

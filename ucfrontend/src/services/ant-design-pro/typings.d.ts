@@ -8,6 +8,7 @@ declare namespace API {
     userAccount?: string;
     avatarUrl?: string;
     userStatus?: number;
+    userRole?: number;
   };
 
   type LoginResult = {
@@ -16,6 +17,7 @@ declare namespace API {
     userAccount?: string;
     avatarUrl?: string;
     userStatus?: number;
+    userRole?: number;
   };
 
   type RegisterResult = number;
