@@ -68,7 +68,7 @@ public class User implements Serializable {
     private Integer userStatus;
 
     /**
-     * 用户角色（1：管理者、2：普通用户）
+     * 用户角色（1：普通用户、2：管理者）
      */
     private Integer userRole;
 

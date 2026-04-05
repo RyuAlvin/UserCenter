@@ -2,6 +2,19 @@
 /* eslint-disable */
 
 declare namespace API {
+  type UserInfo = {
+    id: number;
+    username?: string;
+    userAccount: string;
+    avatarUrl?: string;
+    gender?: number;
+    phone?: string;
+    email?: string;
+    userStatus?: number;
+    userRole?: number;
+    createTime?: string;
+  };
+
   type CurrentUser = {
     id?: number;
     username?: string;

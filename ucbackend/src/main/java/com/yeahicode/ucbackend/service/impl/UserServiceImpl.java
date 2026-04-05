@@ -147,14 +147,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             log.error("该用户不存在");
             return Collections.emptyList();
         }
-        // 4、判断用户状态
-        if (latestUserInfo.getUserRole() != 0) {
+        // 4、用户状态确认
+        if (latestUserInfo.getUserStatus() == 0) {
+            log.error("当前用户状态不可用");
+            return Collections.emptyList();
+        }
+        // 5、判断用户全新
+        if (latestUserInfo.getUserRole() != 2) {
             log.error("该用户非管理员");
             return Collections.emptyList();
         }
-        // 5、查询所有用户
+        // 6、查询所有用户
         List<User> userList = userMapper.selectAllIncludingDeleted();
-        // 6、循环数据脱敏
+        // 7、循环数据脱敏
         return userList.stream().map(user -> {
             SearchUser searchUser = new SearchUser();
             BeanUtils.copyProperties(user, searchUser);

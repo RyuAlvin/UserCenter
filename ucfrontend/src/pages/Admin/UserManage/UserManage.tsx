@@ -1,112 +1,100 @@
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { Button, Dropdown, Space, Tag } from 'antd';
+import { ProTable } from '@ant-design/pro-components';
+import { Button, Dropdown, Image } from 'antd';
 import { useRef } from 'react';
-import request from 'umi-request';
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
+import { userList } from '@/services/ant-design-pro/api';
+import anonymous from '@/assets/image/anonymous.png'
 
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
-
-type GithubIssueItem = {
-  url: string;
-  id: number;
-  number: number;
-  title: string;
-  labels: {
-    name: string;
-    color: string;
-  }[];
-  state: string;
-  comments: number;
-  created_at: string;
-  updated_at: string;
-  closed_at?: string;
-};
-
-const columns: ProColumns<GithubIssueItem>[] = [
+const columns: ProColumns<API.UserInfo>[] = [
   {
-    dataIndex: 'index',
+    title: '#',
+    width: 40,
     valueType: 'indexBorder',
-    width: 48,
   },
   {
-    title: '标题',
-    dataIndex: 'title',
+    title: 'ID',
+    width: 40,
+    dataIndex: 'id',
+  },
+  {
+    title: '账号',
+    dataIndex: 'userAccount',
     copyable: true,
     ellipsis: true,
-    tooltip: '标题过长会自动收缩',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
+    tooltip: '账号过长会自动收缩',
+  },
+  {
+    title: '头像',
+    dataIndex: 'avatarUrl',
+    ellipsis: true,
+    render: (_, record) => {
+      if (record.avatarUrl) {
+        return <Image width={20} src={record.avatarUrl} fallback={anonymous} />;
+      }
+      return <Image width={20} src={anonymous} />;
     },
   },
   {
-    disable: true,
-    title: '状态',
-    dataIndex: 'state',
+    title: '性别',
+    dataIndex: 'gender',
     filters: true,
     onFilter: true,
     ellipsis: true,
     valueType: 'select',
     valueEnum: {
-      all: { text: '超长'.repeat(50) },
-      open: {
-        text: '未解决',
-        status: 'Error',
-      },
-      closed: {
-        text: '已解决',
-        status: 'Success',
-        disabled: true,
-      },
-      processing: {
-        text: '解决中',
-        status: 'Processing',
-      },
+      0: { text: '未设置' },
+      1: { text: '男性' },
+      2: { text: '女性' },
     },
   },
   {
-    disable: true,
-    title: '标签',
-    dataIndex: 'labels',
-    search: false,
-    renderFormItem: (_, { defaultRender }) => {
-      return defaultRender(_);
+    title: '电话',
+    dataIndex: 'phone',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: '邮件',
+    dataIndex: 'email',
+    copyable: true,
+    ellipsis: true,
+  },
+  {
+    title: '状态',
+    dataIndex: 'userStatus',
+    filters: true,
+    onFilter: true,
+    ellipsis: true,
+    valueType: 'select',
+    valueEnum: {
+      0: { text: '禁用', status: 'error' },
+      1: { text: '可用', status: 'active' },
     },
-    render: (_, record) => (
-      <Space>
-        {record.labels.map(({ name, color }) => (
-          <Tag color={color} key={name}>
-            {name}
-          </Tag>
-        ))}
-      </Space>
-    ),
+  },
+  {
+    title: '角色',
+    dataIndex: 'userRole',
+    filters: true,
+    onFilter: true,
+    ellipsis: true,
+    valueType: 'select',
+    valueEnum: {
+      1: { text: '普通用户', status: 'Default' },
+      2: { text: '管理员', status: 'Success' },
+    },
   },
   {
     title: '创建时间',
-    key: 'showTime',
-    dataIndex: 'created_at',
-    valueType: 'date',
+    key: 'createTime',
+    dataIndex: 'createTime',
+    valueType: 'dateTime',
     sorter: true,
     hideInSearch: true,
   },
   {
     title: '创建时间',
-    dataIndex: 'created_at',
+    dataIndex: 'createTime',
     valueType: 'dateRange',
     hideInTable: true,
     search: {
@@ -131,17 +119,14 @@ const columns: ProColumns<GithubIssueItem>[] = [
       >
         编辑
       </a>,
-      <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
-        查看
+      <a
+        key="delete"
+        onClick={() => {
+          console.log('delete');
+        }}
+      >
+        删除
       </a>,
-      <TableDropdown
-        key="actionGroup"
-        onSelect={() => action?.reload()}
-        menus={[
-          { key: 'copy', name: '复制' },
-          { key: 'delete', name: '删除' },
-        ]}
-      />,
     ],
   },
 ];
@@ -149,18 +134,14 @@ const columns: ProColumns<GithubIssueItem>[] = [
 export default () => {
   const actionRef = useRef<ActionType>();
   return (
-    <ProTable<GithubIssueItem>
+    <ProTable<API.UserInfo>
       columns={columns}
       actionRef={actionRef}
       cardBordered
       request={async (params, sort, filter) => {
         console.log(sort, filter);
-        await waitTime(2000);
-        return request<{
-          data: GithubIssueItem[];
-        }>('https://proapi.azurewebsites.net/github/issues', {
-          params,
-        });
+        const data = await userList({ ...params});
+        return { data };
       }}
       editable={{
         type: 'multiple',

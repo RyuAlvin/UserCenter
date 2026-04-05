@@ -4,6 +4,7 @@ import com.yeahicode.ucbackend.model.User;
 import com.yeahicode.ucbackend.model.request.LoginUser;
 import com.yeahicode.ucbackend.model.request.RegisterUser;
 import com.yeahicode.ucbackend.model.response.LoginedUser;
+import com.yeahicode.ucbackend.model.response.SearchUser;
 import com.yeahicode.ucbackend.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/user")
 @RestController
@@ -86,5 +89,10 @@ public class UserController {
         // 5、脱敏
         BeanUtils.copyProperties(rtUser, loginedUser);
         return loginedUser;
+    }
+
+    @GetMapping("/list")
+    public List<SearchUser> getUserList(HttpServletRequest request) {
+        return userService.userList(request);
     }
 }
