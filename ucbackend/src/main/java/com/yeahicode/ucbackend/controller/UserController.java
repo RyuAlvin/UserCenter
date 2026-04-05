@@ -95,4 +95,14 @@ public class UserController {
     public List<SearchUser> getUserList(HttpServletRequest request) {
         return userService.userList(request);
     }
+
+    @PostMapping("/logout")
+    public Long userLogout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return null;
+        }
+        session.removeAttribute("LOGINED_USER");
+        return 1L;
+    }
 }
