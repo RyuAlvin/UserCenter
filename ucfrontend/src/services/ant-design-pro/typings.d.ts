@@ -2,6 +2,13 @@
 /* eslint-disable */
 
 declare namespace API {
+  interface BaseResponse<T = any> {
+    data: T;
+    code: number;
+    msg: string;
+    desc: string;
+  }
+
   type UserInfo = {
     id: number;
     username?: string;

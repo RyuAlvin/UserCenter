@@ -8,7 +8,6 @@ import React from 'react';
 
 const Register: React.FC = () => {
   const handleSubmit = async (values: API.RegisterParams) => {
-    const registerErrMsg = '注册失败，请重试！';
     try {
       // 1、两次密码是否一致校验，不一致则中止
       // 2、发起异步注册请求
@@ -22,14 +21,15 @@ const Register: React.FC = () => {
       }
       // 注册
       const result = await register({ ...values });
-      if (result > 0) {
+      console.log(result);
+      if (result.code === 20000 && result.data > 0) {
         message.success('注册成功');
         history.push('/user/login');
         return;
       }
-      message.error(registerErrMsg);
+      message.error(`${result.msg}/${result.desc}`);
     } catch (error) {
-      message.error(registerErrMsg);
+      message.error('注册失败，请重试！');
     }
   };
 

@@ -1,5 +1,10 @@
 package com.yeahicode.ucbackend.controller;
 
+import com.yeahicode.ucbackend.common.BaseResponse;
+import com.yeahicode.ucbackend.common.Constants;
+import com.yeahicode.ucbackend.common.Result;
+import com.yeahicode.ucbackend.common.StatusCode;
+import com.yeahicode.ucbackend.exception.BusinessException;
 import com.yeahicode.ucbackend.model.User;
 import com.yeahicode.ucbackend.model.request.LoginUser;
 import com.yeahicode.ucbackend.model.request.RegisterUser;
@@ -25,84 +30,83 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public Long userRegister(@RequestBody RegisterUser registerUser) {
+    public BaseResponse<Long> userRegister(@RequestBody RegisterUser registerUser) {
         // 1、参数对象非空校验
         if (registerUser == null) {
-            log.error("参数对象为空");
-            return -1L;
+            throw new BusinessException(StatusCode.PARAM_ERROR, Constants.Param.NULL);
         }
         // 2、参数对象内容非空校验
         String userAccount = registerUser.getUserAccount();
         String userPassword = registerUser.getUserPassword();
         String checkPassword = registerUser.getCheckPassword();
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            log.error("存在空参数");
-            return -1L;
+            throw new BusinessException(StatusCode.PARAM_ERROR, Constants.Param.BLANK);
         }
         // 3、注册
-        return userService.userRegister(userAccount, userPassword, checkPassword);
+        Long id = userService.userRegister(userAccount, userPassword, checkPassword);
+
+        return Result.success(id);
     }
 
     @PostMapping("/login")
-    public LoginedUser userLogin(@RequestBody LoginUser loginUser, HttpServletRequest request) {
+    public BaseResponse<Void> userLogin(@RequestBody LoginUser loginUser, HttpServletRequest request) {
         // 1、参数对象非空校验
         if (loginUser == null) {
-            log.error("参数对象为空");
-            return null;
+            throw new BusinessException(StatusCode.PARAM_ERROR, Constants.Param.NULL);
         }
         // 2、参数对象内容非空校验
         String userAccount = loginUser.getUserAccount();
         String userPassword = loginUser.getUserPassword();
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            log.error("存在空参数");
-            return null;
+            throw new BusinessException(StatusCode.PARAM_ERROR, Constants.Param.BLANK);
         }
         // 3、登录
-        return userService.userLogin(userAccount, userPassword, request);
+        userService.userLogin(userAccount, userPassword, request);
+
+        return Result.success();
     }
 
     @GetMapping("/current")
-    public LoginedUser getCurrentUser(HttpServletRequest request) {
+    public BaseResponse<LoginedUser> getCurrentUser(HttpServletRequest request) {
         // 1、session非空校验
         HttpSession session = request.getSession(false);
-        if(session == null) {
-            log.error("session为空");
-            return null;
+        if (session == null) {
+            throw new BusinessException(StatusCode.SESSION_ERROR, Constants.Session.NULL);
         }
         // 2、登录态非空校验
-        LoginedUser loginedUser = (LoginedUser) session.getAttribute("LOGINED_USER");
-        if(loginedUser == null) {
-            log.error("session中无登录态");
-            return null;
+        LoginedUser loginedUser = (LoginedUser) session.getAttribute(Constants.Session.KEY);
+        if (loginedUser == null) {
+            throw new BusinessException(StatusCode.SESSION_ERROR, Constants.Session.BLANK);
         }
         // 3、从DB中获取实时用户信息
         User rtUser = userService.getById(loginedUser.getId());
-        if(rtUser == null) {
-            log.error("DB中不存在改用户");
-            return null;
+        if (rtUser == null) {
+            throw new BusinessException(StatusCode.DB_INFO_ERROR, Constants.Biz.NO_USER);
         }
         // 4、最新用户状态校验
         if (rtUser.getUserStatus() == 0) {
-            log.error("该用户目前为禁用状态");
-            return null;
+            throw new BusinessException(StatusCode.DB_INFO_ERROR, Constants.Biz.DISABLE_USER);
         }
         // 5、脱敏
         BeanUtils.copyProperties(rtUser, loginedUser);
-        return loginedUser;
+
+        return Result.success(loginedUser);
     }
 
     @GetMapping("/list")
-    public List<SearchUser> getUserList(HttpServletRequest request) {
-        return userService.userList(request);
+    public BaseResponse<List<SearchUser>> getUserList(HttpServletRequest request) {
+        List<SearchUser> searchUsers = userService.userList(request);
+        return Result.success(searchUsers);
     }
 
     @PostMapping("/logout")
-    public Long userLogout(HttpServletRequest request) {
+    public BaseResponse<Void> userLogout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if(session == null) {
-            return null;
+        if (session == null) {
+            throw new BusinessException(StatusCode.SESSION_ERROR, Constants.Session.NULL);
         }
-        session.removeAttribute("LOGINED_USER");
-        return 1L;
+        session.removeAttribute(Constants.Session.KEY);
+
+        return Result.success();
     }
 }

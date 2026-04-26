@@ -20,11 +20,10 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async (values: API.LoginParams) => {
-    const loginErrMsg = '登录失败，请重试！';
     try {
       // 登录
-      const user = await login({ ...values });
-      if (user) {
+      const result = await login({ ...values });
+      if (result.code === 20000) {
         message.success('登录成功！');
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -34,9 +33,9 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       }
-      message.error(loginErrMsg);
+      message.error(`${result.msg}/${result.desc}`);
     } catch (error) {
-      message.error(loginErrMsg);
+      message.error('登录失败，请重试！');
     }
   };
 
