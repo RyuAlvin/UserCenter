@@ -1,11 +1,10 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from 'umi';
-import BaseResponse = API.BaseResponse;
 
 /** 获取当前的用户 GET /api/user/current */
 export async function currentUser(options?: { [key: string]: any }) {
-  const result = await request<BaseResponse<API.CurrentUser>>('/api/user/current', {
+  const result = await request<API.BaseResponse<API.CurrentUser>>('/api/user/current', {
     method: 'GET',
     ...(options || {}),
   });
@@ -14,7 +13,7 @@ export async function currentUser(options?: { [key: string]: any }) {
 
 /** 获取所有用户 GET /api/user/list */
 export async function userList(options?: { [key: string]: any }) {
-  const result = await request<BaseResponse<API.UserInfo>>('/api/user/list', {
+  const result = await request<API.BaseResponse<API.UserInfo>>('/api/user/list', {
     method: 'GET',
     ...(options || {}),
   });
@@ -23,7 +22,7 @@ export async function userList(options?: { [key: string]: any }) {
 
 /** 退出登录接口 POST /api/user/logout */
 export async function logout(options?: { [key: string]: any }) {
-  return request<BaseResponse>('/api/user/logout', {
+  return request<API.BaseResponse>('/api/user/logout', {
     method: 'POST',
     ...(options || {}),
   });
@@ -31,7 +30,7 @@ export async function logout(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/user/login */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<BaseResponse>('/api/user/login', {
+  return request<API.BaseResponse>('/api/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +42,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
 
 /** 注册接口 POST /api/user/register */
 export async function register(body: API.RegisterParams, options?: { [key: string]: any }) {
-  return request<BaseResponse<number>>('/api/user/register', {
+  return request<API.BaseResponse<number>>('/api/user/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
