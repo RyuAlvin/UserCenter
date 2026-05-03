@@ -1,5 +1,5 @@
 # 拉取OpenJDK17精简版（体积更小）作为基础运行环境
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 
 # 作者（可选）
 # LABEL maintainer="you"
