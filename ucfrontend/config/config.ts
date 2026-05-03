@@ -49,7 +49,14 @@ export default defineConfig({
   esbuild: {},
   title: false,
   ignoreMomentLocale: true,
+  // 开发环境代理配置（仅在本地开发时生效）
   proxy: proxy[REACT_APP_ENV || 'dev'],
+  // 生产环境配置（打包时注入）
+  define: {
+    'process.env.API_BASE_URL': process.env.NODE_ENV === 'production'
+      ? ''  // 生产环境后端域名
+      : ''  // 开发环境走 proxy
+  },
   manifest: {
     basePath: '/',
   },
