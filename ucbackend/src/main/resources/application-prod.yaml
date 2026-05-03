@@ -1,7 +1,7 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    username: app
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
     password: 12345678
     url: jdbc:mysql://mysql-container:3306/uccenter
 server:
