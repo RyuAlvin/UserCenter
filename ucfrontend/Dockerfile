@@ -7,6 +7,6 @@ RUN rm -rf /usr/share/nginx/dist/*
 COPY dist/ /usr/share/nginx/dist/
 
 # 可选：自定义 nginx.conf
-COPY /etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
