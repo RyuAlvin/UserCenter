@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 12345678
+    url: jdbc:mysql://mysql-container:3306/uccenter
+server:
+  servlet:
+    context-path: /
+  port: 8080

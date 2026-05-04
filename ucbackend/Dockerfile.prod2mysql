@@ -1,0 +1,17 @@
+# 拉取OpenJDK17精简版（体积更小）作为基础运行环境
+FROM eclipse-temurin:17-jdk-jammy
+
+# 作者（可选）
+# LABEL maintainer="you"
+
+# 工作目录
+WORKDIR /app
+
+# 拷贝jar
+COPY target/*.jar app.jar
+
+# 暴露端口
+EXPOSE 8080
+
+# 启动命令
+ENTRYPOINT ["java","-Xms512m","-Xmx1024m","-jar","app.jar","--spring.profiles.active=prod2mysql"]
