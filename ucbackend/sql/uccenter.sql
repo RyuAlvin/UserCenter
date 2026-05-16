@@ -11,11 +11,32 @@
  Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 16/05/2026 14:49:22
+ Date: 16/05/2026 15:13:15
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for tag
+-- ----------------------------
+DROP TABLE IF EXISTS `tag`;
+CREATE TABLE `tag`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '标签id',
+  `tagName` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标签名称',
+  `userId` bigint NULL DEFAULT NULL COMMENT '用户id',
+  `parentId` bigint NULL DEFAULT NULL COMMENT '父标签id',
+  `isParent` tinyint NULL DEFAULT 0 COMMENT '是否为父标签（0：子标签、1：父标签）',
+  `isDelete` tinyint NULL DEFAULT 0 COMMENT '逻辑删除',
+  `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updateTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uq_tag_tagName`(`tagName`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tag
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user
