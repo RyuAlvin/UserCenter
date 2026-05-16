@@ -53,6 +53,11 @@ public class SearchUser {
     private Integer userRole;
 
     /**
+     * 标签
+     */
+    private String tag;
+
+    /**
      * 逻辑删除
      */
     private Integer isDelete;

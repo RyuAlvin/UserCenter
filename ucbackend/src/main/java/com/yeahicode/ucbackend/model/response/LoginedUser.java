@@ -40,4 +40,9 @@ public class LoginedUser implements Serializable {
      * 用户角色
      */
     private Integer userRole;
+
+    /**
+     * 标签
+     */
+    private String tag;
 }

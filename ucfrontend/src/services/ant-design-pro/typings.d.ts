@@ -19,6 +19,7 @@ declare namespace API {
     email?: string;
     userStatus?: number;
     userRole?: number;
+    tag?: string;
     createTime?: string;
   };
 
@@ -29,6 +30,7 @@ declare namespace API {
     avatarUrl?: string;
     userStatus?: number;
     userRole?: number;
+    tag?: String;
   };
 
   type LoginResult = {

@@ -11,7 +11,7 @@
  Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 02/05/2026 09:34:46
+ Date: 16/05/2026 14:49:22
 */
 
 SET NAMES utf8mb4;
@@ -32,23 +32,25 @@ CREATE TABLE `user`  (
   `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邮箱',
   `userStatus` tinyint NULL DEFAULT 1 COMMENT '用户状态（0：禁用、1：可用）',
   `userRole` tinyint NULL DEFAULT 1 COMMENT '用户角色（1：普通用户、2：管理者）',
+  `tag` varchar(5120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标签',
   `isDelete` tinyint NULL DEFAULT 0 COMMENT '逻辑删除',
   `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updateTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'ryuuu', 'ryuuu', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 2, '123', '11111111111', '111@gmail.com', 1, 1, 0, '2026-03-18 20:21:26', '2026-03-18 20:21:26');
-INSERT INTO `user` VALUES (5, 'Test001', 'Test001', '', 1, 'f3e53385f5a8d666ffb9c541fe1b5967', '33333333333', '333@gmail.com', 1, 1, 0, '2026-03-21 17:07:51', '2026-03-21 17:07:51');
-INSERT INTO `user` VALUES (6, 'Test002', 'Test002', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 1, 'f3e53385f5a8d666ffb9c541fe1b5967', '44444444444', '444@gmail.com', 0, 1, 0, '2026-03-21 17:07:51', '2026-03-21 17:07:51');
-INSERT INTO `user` VALUES (7, 'TestDeleted', 'TestDeleted', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 2, 'f3e53385f5a8d666ffb9c541fe1b5967', '55555555555', '555@gmail.com', 1, 1, 1, '2026-03-21 17:07:51', '2026-03-21 17:07:51');
-INSERT INTO `user` VALUES (8, 'admin', 'admin', 'https://prod-eurasian-res.popmart.com/default/20260120_114905_241448____1_____1200x1200.jpg', 1, 'f3e53385f5a8d666ffb9c541fe1b5967', '66666666666', '666@gmail.com', 1, 2, 0, '2026-03-21 17:07:51', '2026-03-21 17:07:51');
-INSERT INTO `user` VALUES (9, 'Test003', 'Test003', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 2, 'f3e53385f5a8d666ffb9c541fe1b5967', '77777777777', '777@gmail.com', 1, 1, 0, '2026-03-25 23:37:02', '2026-03-25 23:37:02');
-INSERT INTO `user` VALUES (10, 'Test004', 'Test004', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 1, 'f3e53385f5a8d666ffb9c541fe1b5967', '88888888888', '888@gmail.com', 1, 1, 0, '2026-03-26 10:14:45', '2026-03-26 10:14:45');
-INSERT INTO `user` VALUES (11, 'Test005', 'Test005', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 2, 'f3e53385f5a8d666ffb9c541fe1b5967', '99999999999', '999@gmail.com', 1, 1, 0, '2026-03-26 10:40:22', '2026-03-26 10:40:22');
-INSERT INTO `user` VALUES (12, 'Test006', 'Test006', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 0, 'f3e53385f5a8d666ffb9c541fe1b5967', '00000000000', '000@gmail.com', 1, 1, 0, '2026-03-26 10:50:09', '2026-03-26 10:50:09');
+INSERT INTO `user` VALUES (1, 'ryuuu', 'ryuuu', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 2, '123', '11111111111', '111@gmail.com', 1, 1, NULL, 0, '2026-03-18 20:21:26', '2026-03-18 20:21:26');
+INSERT INTO `user` VALUES (5, 'Test001', 'Test001', '', 1, 'f3e53385f5a8d666ffb9c541fe1b5967', '33333333333', '333@gmail.com', 1, 1, NULL, 0, '2026-03-21 17:07:51', '2026-03-21 17:07:51');
+INSERT INTO `user` VALUES (6, 'Test002', 'Test002', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 1, 'f3e53385f5a8d666ffb9c541fe1b5967', '44444444444', '444@gmail.com', 0, 1, NULL, 0, '2026-03-21 17:07:51', '2026-03-21 17:07:51');
+INSERT INTO `user` VALUES (7, 'TestDeleted', 'TestDeleted', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 2, 'f3e53385f5a8d666ffb9c541fe1b5967', '55555555555', '555@gmail.com', 1, 1, NULL, 1, '2026-03-21 17:07:51', '2026-03-21 17:07:51');
+INSERT INTO `user` VALUES (8, 'admin', 'admin', 'https://prod-eurasian-res.popmart.com/default/20260120_114905_241448____1_____1200x1200.jpg', 1, 'f3e53385f5a8d666ffb9c541fe1b5967', '66666666666', '666@gmail.com', 1, 2, NULL, 0, '2026-03-21 17:07:51', '2026-03-21 17:07:51');
+INSERT INTO `user` VALUES (9, 'Test003', 'Test003', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 2, 'f3e53385f5a8d666ffb9c541fe1b5967', '77777777777', '777@gmail.com', 1, 1, NULL, 0, '2026-03-25 23:37:02', '2026-03-25 23:37:02');
+INSERT INTO `user` VALUES (10, 'Test004', 'Test004', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 1, 'f3e53385f5a8d666ffb9c541fe1b5967', '88888888888', '888@gmail.com', 1, 1, NULL, 0, '2026-03-26 10:14:45', '2026-03-26 10:14:45');
+INSERT INTO `user` VALUES (11, 'Test005', 'Test005', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 2, 'f3e53385f5a8d666ffb9c541fe1b5967', '99999999999', '999@gmail.com', 1, 1, NULL, 0, '2026-03-26 10:40:22', '2026-03-26 10:40:22');
+INSERT INTO `user` VALUES (12, 'Test006', 'Test006', 'https://prod-eurasian-res.popmart.com/default/20260224_160615_103509____1_____1200x1200.jpg', 0, 'f3e53385f5a8d666ffb9c541fe1b5967', '00000000000', '000@gmail.com', 1, 1, NULL, 0, '2026-03-26 10:50:09', '2026-03-26 10:50:09');
+INSERT INTO `user` VALUES (14, 'alvin11', 'alvin11', NULL, 0, 'f3e53385f5a8d666ffb9c541fe1b5967', NULL, NULL, 1, 1, NULL, 0, '2026-05-02 09:39:42', '2026-05-02 09:39:42');
 
 SET FOREIGN_KEY_CHECKS = 1;
