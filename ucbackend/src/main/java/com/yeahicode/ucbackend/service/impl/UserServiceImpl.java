@@ -2,9 +2,12 @@ package com.yeahicode.ucbackend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.yeahicode.ucbackend.common.Constants;
 import com.yeahicode.ucbackend.common.StatusCode;
 import com.yeahicode.ucbackend.exception.BusinessException;
+import com.yeahicode.ucbackend.mapper.TagMapper;
 import com.yeahicode.ucbackend.mapper.UserMapper;
 import com.yeahicode.ucbackend.model.User;
 import com.yeahicode.ucbackend.model.response.LoginedUser;
@@ -16,11 +19,17 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author ryualvin
@@ -38,6 +47,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private UserMapper userMapper;
+    @Autowired
+    private TagMapper tagMapper;
 
     @Override
     public Long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -150,11 +161,69 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 6、查询所有用户
         List<User> userList = userMapper.selectAllIncludingDeleted();
         // 7、循环数据脱敏
-        return userList.stream().map(user -> {
-            SearchUser searchUser = new SearchUser();
-            BeanUtils.copyProperties(user, searchUser);
-            return searchUser;
+        return userList.stream().map(this::toSearchUser).toList();
+    }
+
+    /**
+     * SQL全量查询+代码过滤
+     * 用户传入多个标签，查询同时拥有该多个标签的用户（两种方式：SQL过滤，SQL全量+代码过滤）
+     * - 并发两种方式查询，谁先返回用谁的；
+     * - 前期分析是否存在：两种方式在超过某个标签数量的时候，查询时间发生变化。将该标签数量作为判定临界值，调用不同的查询方式；
+     * - 先用SQL过滤一部分用户（比如大部分人会使用"JAVA"标签），在返回的结果集的基础上再通过代码过滤。
+     * - SQL全量+代码过滤：
+     *
+     * @param tags
+     * @return
+     */
+    @Override
+    public List<SearchUser> searchUserByTags(List<String> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<User> userList = this.list();
+
+        userList = userList.stream().filter(user -> {
+            String userTags = user.getTag();
+            if (StringUtils.isBlank(userTags)) {
+                return false;
+            }
+
+            Gson gson = new Gson();
+            Set<String> tagsSet = gson.fromJson(userTags, new TypeToken<Set<String>>() {
+            });
+
+            return tagsSet.containsAll(tags);
         }).toList();
+
+        return userList.stream().map(this::toSearchUser).collect(Collectors.toList());
+    }
+
+    /**
+     * SQL过滤方式
+     *
+     * @param tags
+     * @return
+     */
+    @Deprecated(forRemoval = true)
+    private List<SearchUser> searchUserByTagsOld(List<String> tags) {
+        List<SearchUser> userList = new ArrayList<>();
+        if (CollectionUtils.isEmpty(tags)) {
+            return userList;
+        }
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        for (String tag : tags) {
+            qw = qw.like("tag", tag);
+        }
+
+        userList = userMapper.selectList(qw).stream().map(this::toSearchUser).collect(Collectors.toList());
+        return userList;
+    }
+
+    private SearchUser toSearchUser(User user) {
+        SearchUser searchUser = new SearchUser();
+        BeanUtils.copyProperties(user, searchUser);
+        return searchUser;
     }
 }
 

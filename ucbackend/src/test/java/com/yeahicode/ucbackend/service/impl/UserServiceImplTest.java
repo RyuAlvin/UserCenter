@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -18,6 +19,18 @@ class UserServiceImplTest {
 
     @Resource
     private UserService userService;
+
+    @Test
+    void searchUserByTags() {
+        List<SearchUser> searchUsers = userService.searchUserByTags(Arrays.asList("男", "Java", "已婚"));
+        searchUsers.forEach(System.out::println);
+    }
+
+    @Test
+    void searchUserByTagsOld() {
+        List<SearchUser> searchUsers = userService.searchUserByTags(Arrays.asList("男", "Java", "已婚"));
+        searchUsers.forEach(System.out::println);
+    }
 
     @Test
     void userListTest() {

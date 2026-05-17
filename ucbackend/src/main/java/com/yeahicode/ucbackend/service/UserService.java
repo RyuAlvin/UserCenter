@@ -20,4 +20,6 @@ public interface UserService extends IService<User> {
     LoginedUser userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
     List<SearchUser> userList(HttpServletRequest request);
+
+    List<SearchUser> searchUserByTags(List<String> tags);
 }
